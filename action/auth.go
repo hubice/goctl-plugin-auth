@@ -60,9 +60,14 @@ func AuthApi(ctx *cli.Context) error {
 		middleware := ser.Annotation.Properties["middleware"]
 		if strings.Contains(middleware, "AdminAuth") {
 			for _, ro := range ser.Routes {
+				marshal, err := json.Marshal(ro)
+				if err != nil {
+					return err
+				}
+				fmt.Println(string(marshal))
 				summary := strings.Trim(ro.AtDoc.Properties["summary"], `"`)
 				if len(summary) == 0 {
-					summary = ro.Doc[0]
+					summary = strings.Trim(ro.AtDoc.Text, `"`)
 				}
 				url := ro.Path
 				handler := ro.AtServerAnnotation.Properties["handler"]
